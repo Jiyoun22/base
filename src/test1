@@ -1,1 +1,65 @@
 
+from keras.models import Model, load_model
+from keras.layers import input
+from keras.layers.core import Lambda, RepearVector, Reshape
+from keras.layers.convolutional import Conv2D, Conv2DTranspose
+from keras.layers.pooling import MaxPooling2D
+from keras.layers.merge import concatenate
+from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLRnPlateau
+from keras import backed as K
+
+////
+image_path ='../input/dataA/dataA/CameraRGB/'
+mask_path ='../input/dataA/dataA/CameraSeg/'
+image_list=os.listdir(image_path)
+mask_list =os.listdir(mask_path)
+image_list =[image_path +i for i in image_list]
+mask_list =[mask_path +i for i in mask_list]
+
+image_list.sort()
+mask_list.sort()
+
+N=1
+img=imageio.imread(image_list[N])
+mask=imageio.imread(image_list[N])
+mask=np.array([max(mask[i,j]) for i in range(mask.shape[0]) for j in range(mask.shape[1])]).reshape(img.shape[0],img.shape[1])
+
+fig,arr=plt.subplots(1,2, figsize=(14,10))
+arr[0].imshow(img)
+arr[0].set_title('Image')
+arr[1].imshow(mask,cmap='Paried')
+arr[1].set_title('Segmentation')
+
+road=np.zeros((600,800))
+road[np.where(mask==7,np.where(mask==7)[1])=1
+plt.imshow(road)
+
+////
+from tqdm import tqdm
+height, width =600,800
+images=np.zeros((len(image_list),height,width,3),dtype=np.int16)
+masks=np.zeros((len(image_list),height,width,1),dtype=np.int8)
+
+for n in tqdm(range(len(image_list)));
+  img=imageio.imread(image_list[n])
+  mask = imageio.imread(mask_list[n])
+  mask_road=np.zeros((600,800,1),dtype=np.int8)
+  mask_road=[np.where(mask==7)[0], np.where(mask==7)[1]]=1
+
+  images[n] =img
+  masks[n]=mask_road
+
+plt.imshow(images[1].reshape(600,800,3))
+
+np.random.seed(123)
+shuffle_ids=np.array([i for i in range(len(masks))]
+np.random.shffle(shuffle_ids)
+train_ids=shuffle_ids[:int(len(masks)*0.8)]
+val_ids=shuffle_ids[int(len(masks)*0.8):int(len(masks)*0.8 +100)]
+test_ids=shuffle_ids[int(len(masks)*0.8+100:]
+
+train_images, train_masks = images[train_ids], masks[train_ids]
+val_images, val_masks = images[val_ids],masks[val_ids]
+test_images, test_masks = images[test_ids], masks[test_ids]
+
+train_images.shape, val_images.shape, test_images.shape
